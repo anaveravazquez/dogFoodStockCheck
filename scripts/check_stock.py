@@ -68,8 +68,9 @@ def should_send_12h_status(last_sent_iso: str | None, now: datetime) -> bool:
 def send_email(subject: str, body: str):
     smtp_host = os.environ["SMTP_HOST"]
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
-    smtp_user = os.environ["SMTP_USERNAME"]
-    smtp_pass = os.environ["SMTP_PASSWORD"]
+    # Normalize credentials: strip whitespace and replace non-breaking spaces
+    smtp_user = os.environ["SMTP_USERNAME"].replace('\xa0', ' ').strip()
+    smtp_pass = os.environ["SMTP_PASSWORD"].replace('\xa0', ' ').strip()
     mail_from = os.environ["MAIL_FROM"]
     recipients = [r.strip() for r in os.environ["MAIL_TO"].split(",") if r.strip()]
 
